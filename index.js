@@ -25,7 +25,7 @@ var insts = [{
     },
     {
       mvdir: 5510400.0,
-      nomi: "Stomatologiya (yo‘nalishlar bo‘yicha) ",
+      nomi: "Stomatologiya (yo‘nalishlar bo‘yicha)",
       gr_k: 40,
       con_k: 40,
       olimp: 0
@@ -883,7 +883,6 @@ bot.on('message', (msg) => {
   var otmSd = "Samarqand Davlat Tibbiyot Instituti";
   if (msg.text.toString().indexOf(otmSd) === 0) {
     userData.otm = "Samarqand Davlat Tibbiyot Instituti"
-    console.log(userData)
       bot.sendMessage(msg.chat.id, "Yo'nalishni tanlang: ", {
       "reply_markup": {"keyboard": samMiYunalish}
     })
@@ -894,7 +893,6 @@ bot.on('message', (msg) => {
   var otmSd = "Samarqand vetereaneriya va meditsina instituti";
   if (msg.text.toString().indexOf(otmSd) === 0) {
     userData.otm = "Samarqand vetereaneriya va meditsina instituti"
-    console.log(userData)
       bot.sendMessage(msg.chat.id, "Yo'nalishni tanlang: ", {
       "reply_markup": {"keyboard": veTYunalish}
     })
@@ -906,7 +904,6 @@ bot.on('message', (msg) => {
 bot.on('message', (msg) => {
   if (msg.text.toString().indexOf(exit) === 0) {
     userData = {}
-    console.log(userData)
       bot.sendMessage(msg.chat.id, "🏘 Asosiy menu", {
       "reply_markup": {"keyboard": [["📃 Ro'yxatdan o'tish", "🔍 Tekshirish"], ["📖 Ma'lumot"], ["📨 Xabar qoldirish"]]}
     })
@@ -917,11 +914,23 @@ bot.on('message', (msg) => {
 var allYunalish = []
 
 for (let i = 0; i < insts.length; i++) {
-  const element = insts[i];
-  for (let j = 0; j < element.yunalishlar.length; j++) {
-  const elementim = element.yunalishlar[j];
-    allYunalish.push(elementim)
-}  
+  const elem = insts[i].yunalishlar;
+  for (let i = 0; i < elem.length; i++) {
+  const elemin = elem[i];
+  allYunalish.push(elemin)
+} 
+  
 }
 
-console.log(allYunalish.length)
+bot.on('message', (msg) => {
+  for (let i = 0; i < allYunalish.length; i++) {
+  const elim = allYunalish[i];
+  
+  if (msg.text.toString() === elim.nomi) {
+    userData.yunalish = elim
+
+    var jsomim = JSON.stringify(userData);
+    console.log(jsomim)
+  }
+}
+});
