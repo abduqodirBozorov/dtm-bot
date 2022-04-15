@@ -771,21 +771,66 @@ var insts = [{
   ]
 }]
 
+
+var userData = {}
+
 var otms = []
+
+var samduYunalish = []
+var sammiYunalish = []
+var vetYunalish = []
+
+var exit = "❌Bekor qilish"
+
+
+
+const chunk = (arr, size) =>
+  Array.from({ length: Math.ceil(arr.length / size) }, (v, i) =>
+    arr.slice(i * size, i * size + size)
+  );
+
+
 
 for (let i = 0; i < insts.length; i++) {
   const otm = insts[i];
   otms.push(otm.nomi)
 }
 
+otms.push(exit)
+var OTMS = chunk(otms, 3)
+
+
+for (let i = 0; i < insts[0].yunalishlar.length; i++) {
+  const sammiItem = insts[0].yunalishlar[i];
+  sammiYunalish.push(sammiItem.nomi)
+}
+sammiYunalish.push(exit)
+
+for (let i = 0; i < insts[1].yunalishlar.length; i++) {
+  const samduItem = insts[1].yunalishlar[i];
+  samduYunalish.push(samduItem.nomi)
+}
+samduYunalish.push(exit)
+
+for (let i = 0; i < insts[2].yunalishlar.length; i++) {
+  const vetItem = insts[2].yunalishlar[i];
+  vetYunalish.push(vetItem.nomi)
+}
+vetYunalish.push(exit)
+
+
+
+
+
 
 const TelegramBot = require('node-telegram-bot-api');
 
 // replace the value below with the Telegram token you receive from @BotFather
-const token = '1642617711:AAF52zYQRJA90ruvu0vK2hOOkUNlv3ul3rw';
+const token = '5358446083:AAF0FxxdxJivuBQ5qOdzSwkJwr8vZxgiE-8';
 
 // Create a bot that uses 'polling' to fetch new updates
-const bot = new TelegramBot(token, {polling: true});
+const bot = new TelegramBot(token, { polling: true });
+
 
 // Matches "/echo [whatever]"
 bot.onText(/\/echo (.+)/, (msg, match) => {
@@ -800,12 +845,83 @@ bot.onText(/\/echo (.+)/, (msg, match) => {
   bot.sendMessage(chatId, resp);
 });
 
-// Listen for any kind of message. There are different kinds of
-// messages.
-bot.on('/start', (msg) => {
-  bot.sendMessage(msg.chat.id, "Welcome", {
-"reply_markup": {
-    "keyboard": [["Sample text", "Second sample"],   ["Keyboard"], ["I'm robot"]]
+bot.onText(/\/start/, (msg) => {
+  bot.sendMessage(msg.chat.id, "Assalomu alaykum", {
+    "reply_markup": {
+      "keyboard": [["📃 Ro'yxatdan o'tish", "🔍 Tekshirish"], ["📖 Ma'lumot"], ["📨 Xabar qoldirish"]]
     }
+  });
+})
+
+bot.on('message', (msg) => {
+  var reg = "📃 Ro'yxatdan o'tish";
+  if (msg.text.toString().indexOf(reg) === 0) {
+      bot.sendMessage(msg.chat.id, "Oliy ta'lim muassasasini tanlang", 
+      {"reply_markup": {"keyboard": OTMS}
+    })
+  }
 });
+
+
+
+var samDuYunalish = chunk(samduYunalish, 2)
+var samMiYunalish = chunk(sammiYunalish, 2)
+var veTYunalish = chunk(vetYunalish, 2)
+
+
+bot.on('message', (msg) => {
+  var otmSd = "SamDU";
+  if (msg.text.toString().indexOf(otmSd) === 0) {
+    userData.otm = "SamDU"
+      bot.sendMessage(msg.chat.id, "Yo'nalishni tanlang: ", {
+      "reply_markup": {"keyboard": samDuYunalish}
+    })
+  }
 });
+
+bot.on('message', (msg) => {
+  var otmSd = "Samarqand Davlat Tibbiyot Instituti";
+  if (msg.text.toString().indexOf(otmSd) === 0) {
+    userData.otm = "Samarqand Davlat Tibbiyot Instituti"
+    console.log(userData)
+      bot.sendMessage(msg.chat.id, "Yo'nalishni tanlang: ", {
+      "reply_markup": {"keyboard": samMiYunalish}
+    })
+  }
+});
+
+bot.on('message', (msg) => {
+  var otmSd = "Samarqand vetereaneriya va meditsina instituti";
+  if (msg.text.toString().indexOf(otmSd) === 0) {
+    userData.otm = "Samarqand vetereaneriya va meditsina instituti"
+    console.log(userData)
+      bot.sendMessage(msg.chat.id, "Yo'nalishni tanlang: ", {
+      "reply_markup": {"keyboard": veTYunalish}
+    })
+  }
+});
+
+
+
+bot.on('message', (msg) => {
+  if (msg.text.toString().indexOf(exit) === 0) {
+    userData = {}
+    console.log(userData)
+      bot.sendMessage(msg.chat.id, "🏘 Asosiy menu", {
+      "reply_markup": {"keyboard": [["📃 Ro'yxatdan o'tish", "🔍 Tekshirish"], ["📖 Ma'lumot"], ["📨 Xabar qoldirish"]]}
+    })
+  }
+});
+
+
+var allYunalish = []
+
+for (let i = 0; i < insts.length; i++) {
+  const element = insts[i];
+  for (let j = 0; j < element.yunalishlar.length; j++) {
+  const elementim = element.yunalishlar[j];
+    allYunalish.push(elementim)
+}  
+}
+
+console.log(allYunalish.length)
